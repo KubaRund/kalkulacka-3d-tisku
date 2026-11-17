@@ -68,6 +68,11 @@ legend { margin-bottom: 6px; padding: 0; }
 .segmented input:checked + span { background: #fff; border-color: #d7e0df; color: #142f3a; box-shadow: 0 1px 2px #182b3210; }
 .segmented input:focus-visible + span { outline: 3px solid #13877c; outline-offset: 1px; }
 .hint { color: var(--muted); font-size: .79rem; }
+.gcode-import { margin-top: 14px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 9px; background: #f7faf9; }
+.gcode-import label { display: block; margin-bottom: 5px; }
+.gcode-import input { display: block; max-width: 100%; font-size: .83rem; }
+.gcode-import ::file-selector-button { min-height: 36px; margin-right: 8px; padding: 5px 9px; border: 1px solid #bac8cc; border-radius: 7px; color: var(--ink); background: var(--white); cursor: pointer; font: inherit; }
+.gcode-import .hint:not(:empty) { margin-top: 5px; overflow-wrap: anywhere; }
 .scope-field .hint { margin-top: 6px; }
 .form-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 11px 13px; }
 .field { min-width: 0; }

@@ -1,4 +1,5 @@
 import { estimate, EXAMPLE } from "./calc.js";
+import { readGCodeMetadata } from "./gcode.js";
 
 const byId = (id) => document.getElementById(id);
 const form = byId("calculator");
@@ -108,6 +109,38 @@ function prepareCopyText(totals) {
   ].join("\n");
 }
 
+const gcodeInput = byId("gcode");
+const gcodeStatus = byId("gcode-status");
+gcodeInput.addEventListener("change", async () => {
+  const [file] = gcodeInput.files;
+  if (!file) return;
+  gcodeInput.disabled = true;
+  gcodeStatus.textContent = "Načítám údaje ze souboru…";
+  try {
+    const { grams, minutes } = await readGCodeMetadata(file);
+    if (grams === null && minutes === null) {
+      gcodeStatus.textContent = "V souboru se nepodařilo najít hmotnost ani odhad doby tisku.";
+      return;
+    }
+    form.elements.scope.value = "batch";
+    form.elements.quantity.value = "1";
+    form.elements.grams.value = grams === null ? "" : number.format(grams);
+    form.elements.hours.value = minutes === null ? "" : String(Math.floor(minutes / 60));
+    form.elements.minutes.value = minutes === null ? "" : String(minutes % 60);
+
+    const guidance = grams === null ? "Doplň spotřebu v gramech."
+      : minutes === null ? "Doplň dobu tisku."
+      : `Načteno ${number.format(grams)} g a ${formatDuration(minutes)}.`;
+    gcodeStatus.textContent = `${guidance} Pokud je na podložce více kusů, uprav jejich počet.`;
+    render();
+  } catch (error) {
+    gcodeStatus.textContent = error instanceof DOMException ? "Soubor se nepodařilo přečíst." : error.message;
+  } finally {
+    gcodeInput.disabled = false;
+    gcodeInput.value = "";
+  }
+});
+
 form.addEventListener("submit", (event) => event.preventDefault());
 form.addEventListener("input", () => {
   byId("status").textContent = "";
@@ -115,6 +148,7 @@ form.addEventListener("input", () => {
 });
 byId("example").addEventListener("click", () => {
   fillForm(EXAMPLE);
+  gcodeStatus.textContent = "";
   byId("status").textContent = "Ukázka načtena.";
   render();
 });

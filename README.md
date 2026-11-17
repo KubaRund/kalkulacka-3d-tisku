@@ -4,6 +4,12 @@ Kalkulačka v korunách pro jeden výtisk i celou sérii. Z údajů ze sliceru a
 
 **[Otevřít kalkulačku](https://kubarund.github.io/kalkulacka-3d-tisku/)**
 
+## Načtení souboru G-code
+
+Vyber textový soubor ze sliceru přímo v kalkulačce. Aplikace čte komentáře s odhadem doby tisku a spotřebou v gramech. Rozpozná běžný výstup PrusaSliceru, OrcaSliceru a Bambu Studia. Pokud export obsahuje pouze čas, například u běžného výstupu z Cury, hmotnost doplň ručně.
+
+Čas se zaokrouhlí nahoru na celé minuty. Import patří celé tiskové podložce. Po načtení se počet nastaví na jeden kus a můžeš ho upravit podle skutečného počtu. Obsah souboru se zpracuje v prohlížeči bez odesílání. Pro binární `.bgcode` exportuj ze sliceru textový G-code.
+
 ## Příklad
 
 Čtyři výtisky, každý o hmotnosti 38 g a s dobou tisku 1 h 35 min. Cívka s kilogramem filamentu stojí 620 Kč, průměrný příkon tiskárny je 95 W a elektřina stojí 6 Kč/kWh. S 8% rezervou filamentu vyjde série na **105,39 Kč** a jeden výtisk na **26,35 Kč**.

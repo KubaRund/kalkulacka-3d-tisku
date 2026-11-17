@@ -7,8 +7,8 @@
   <meta name="description" content="Kalkulačka nákladů na 3D tisk. Spočítej filament, elektřinu, cenu za kus a celou sérii.">
   <title>Kalkulačka ceny 3D tisku</title>
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="./style.css">
-  <script type="module" src="./app.js"></script>
+  <link rel="stylesheet" href="./style.css?v=2">
+  <script type="module" src="./app.js?v=2"></script>
 </head>
 <body>
   <header class="site-header shell">
@@ -32,6 +32,12 @@
     <div class="workspace">
       <form id="calculator" class="card inputs" novalidate aria-labelledby="inputs-heading">
         <h2 id="inputs-heading">Parametry tisku</h2>
+
+        <div class="gcode-import">
+          <label for="gcode">Načíst čas a spotřebu ze souboru G-code</label>
+          <input id="gcode" type="file" accept=".gcode,.gco,.g" aria-describedby="gcode-status">
+          <p id="gcode-status" class="hint" role="status"></p>
+        </div>
 
         <fieldset class="scope-field">
           <legend>Údaje ze sliceru platí</legend>
