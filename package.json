@@ -1,0 +1,6 @@
+{
+  "name": "kalkulacka-3d-tisku",
+  "private": true,
+  "type": "module",
+  "scripts": { "test": "node --test" }
+}

@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#172734">
+  <meta name="description" content="Kalkulačka nákladů na 3D tisk. Spočítej filament, elektřinu, cenu za kus a celou sérii.">
+  <title>Kalkulačka ceny 3D tisku</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="./style.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <header class="site-header shell">
+    <a href="./" class="brand" aria-label="Cena 3D tisku, úvod"><span class="brand-symbol" aria-hidden="true"><i></i><i></i><i></i></span> Cena 3D tisku</a>
+    <nav aria-label="Kalkulačka">
+      <a href="#vypocet">Jak to počítá</a>
+      <button type="button" id="example" class="outline">Načíst ukázku</button>
+    </nav>
+  </header>
+
+  <main class="shell">
+    <section class="hero" aria-labelledby="title">
+      <img class="hero-image" src="./assets/tisk.webp" alt="" width="1100" height="620" fetchpriority="high">
+      <div class="hero-content">
+        <h1 id="title">Kolik stojí tvůj 3D tisk?</h1>
+        <p>Ze spotřeby filamentu a doby tisku spočítej náklady na jeden výtisk i celou sérii.</p>
+      </div>
+    </section>
+
+    <noscript><p class="notice">Pro výpočet zapni v prohlížeči JavaScript.</p></noscript>
+    <div class="workspace">
+      <form id="calculator" class="card inputs" novalidate aria-labelledby="inputs-heading">
+        <h2 id="inputs-heading">Parametry tisku</h2>
+
+        <fieldset class="scope-field">
+          <legend>Údaje ze sliceru platí</legend>
+          <div class="segmented">
+            <label><input type="radio" name="scope" value="unit" checked><span>Pro jeden kus</span></label>
+            <label><input type="radio" name="scope" value="batch"><span>Pro celou sérii</span></label>
+          </div>
+          <p id="scope-help" class="hint">Zadej hmotnost a dobu tisku jednoho kusu.</p>
+        </fieldset>
+
+        <div class="form-grid">
+          <div class="field">
+            <label for="grams">Spotřeba filamentu</label>
+            <div class="input-wrap"><input id="grams" name="grams" inputmode="decimal" value="38" aria-describedby="grams-error"><span aria-hidden="true">g</span></div>
+            <small class="field-error" id="grams-error"></small>
+          </div>
+          <div class="field">
+            <label for="quantity">Počet kusů v sérii</label>
+            <div class="input-wrap"><input id="quantity" name="quantity" inputmode="numeric" value="4" aria-describedby="quantity-error"><span aria-hidden="true">ks</span></div>
+            <small class="field-error" id="quantity-error"></small>
+          </div>
+        </div>
+
+        <fieldset class="duration">
+          <legend>Doba tisku</legend>
+          <div class="form-grid">
+            <div class="field">
+              <div class="input-wrap"><input id="hours" name="hours" inputmode="numeric" value="1" aria-label="Hodiny tisku" aria-describedby="hours-error"><span aria-hidden="true">h</span></div>
+              <small class="field-error" id="hours-error"></small>
+            </div>
+            <div class="field">
+              <div class="input-wrap"><input id="minutes" name="minutes" inputmode="numeric" value="35" aria-label="Minuty tisku" aria-describedby="minutes-error"><span aria-hidden="true">min</span></div>
+              <small class="field-error" id="minutes-error"></small>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="price-fields">
+          <legend>Ceny a příkon</legend>
+          <div class="form-grid">
+            <div class="field">
+              <label for="spoolPrice">Cena cívky</label>
+              <div class="input-wrap"><input id="spoolPrice" name="spoolPrice" inputmode="decimal" value="620" aria-describedby="spoolPrice-error"><span aria-hidden="true">Kč</span></div>
+              <small class="field-error" id="spoolPrice-error"></small>
+            </div>
+            <div class="field">
+              <label for="spoolGrams">Filament na cívce</label>
+              <div class="input-wrap"><input id="spoolGrams" name="spoolGrams" inputmode="decimal" value="1000" aria-describedby="spoolGrams-error"><span aria-hidden="true">g</span></div>
+              <small class="field-error" id="spoolGrams-error"></small>
+            </div>
+            <div class="field">
+              <label for="power">Průměrný příkon</label>
+              <div class="input-wrap"><input id="power" name="power" inputmode="decimal" value="95" aria-describedby="power-error"><span aria-hidden="true">W</span></div>
+              <small class="field-error" id="power-error"></small>
+            </div>
+            <div class="field">
+              <label for="electricity">Cena elektřiny</label>
+              <div class="input-wrap"><input id="electricity" name="electricity" inputmode="decimal" value="6" aria-describedby="electricity-error"><span aria-hidden="true">Kč/kWh</span></div>
+              <small class="field-error" id="electricity-error"></small>
+            </div>
+          </div>
+        </fieldset>
+
+        <details id="extras" class="extras">
+          <summary>Rezerva a opotřebení</summary>
+          <div class="form-grid">
+            <div class="field">
+              <label for="reserve">Rezerva filamentu</label>
+              <div class="input-wrap"><input id="reserve" name="reserve" inputmode="decimal" value="8" aria-describedby="reserve-error"><span aria-hidden="true">%</span></div>
+              <small class="field-error" id="reserve-error"></small>
+            </div>
+            <div class="field">
+              <label for="wear">Opotřebení tiskárny</label>
+              <div class="input-wrap"><input id="wear" name="wear" inputmode="decimal" value="0" aria-describedby="wear-error"><span aria-hidden="true">Kč/h</span></div>
+              <small class="field-error" id="wear-error"></small>
+            </div>
+          </div>
+        </details>
+      </form>
+
+      <section class="card result" aria-labelledby="result-heading">
+        <div class="result-heading">
+          <h2 id="result-heading">Odhad nákladů</h2>
+          <p id="result-quantity">4 ks</p>
+        </div>
+        <div class="totals">
+          <div>
+            <span>Za celou sérii</span>
+            <output id="total">—</output>
+          </div>
+          <div class="unit-total">
+            <span>Za jeden kus</span>
+            <output id="unit">—</output>
+          </div>
+        </div>
+
+        <div class="cost-bar" id="cost-bar" aria-hidden="true"></div>
+        <dl id="breakdown" class="breakdown">
+          <div><dt><i class="key filament" aria-hidden="true"></i>Filament</dt><dd id="filament-cost">—</dd></div>
+          <div><dt><i class="key energy" aria-hidden="true"></i>Elektřina</dt><dd id="energy-cost">—</dd></div>
+          <div id="reserve-row" hidden><dt><i class="key reserve" aria-hidden="true"></i>Rezerva filamentu</dt><dd id="reserve-cost">—</dd></div>
+          <div id="wear-row" hidden><dt><i class="key wear" aria-hidden="true"></i>Opotřebení</dt><dd id="wear-cost">—</dd></div>
+        </dl>
+
+        <div class="usage" id="usage" hidden>
+          <span id="usage-material"></span>
+          <span id="usage-time"></span>
+          <span id="usage-power"></span>
+        </div>
+        <p class="notice error" id="result-error" hidden></p>
+        <div class="result-actions">
+          <button id="copy" type="button" disabled>Zkopírovat výsledek</button>
+          <p class="hint" id="status" role="status"></p>
+        </div>
+      </section>
+    </div>
+
+    <details id="vypocet" class="card explanation">
+      <summary>Jak se náklady počítají</summary>
+      <ul>
+        <li><strong>Filament</strong> je spotřebovaná hmotnost vynásobená cenou za gram. Rezerva se přičítá procentem z ceny filamentu.</li>
+        <li><strong>Elektřina</strong> se počítá jako průměrný příkon v kilowattech × čas v hodinách × cena za kWh.</li>
+        <li><strong>Opotřebení</strong> je zadaná hodinová sazba × doba tisku.</li>
+      </ul>
+      <p>Pokud slicer spočítal více kusů na jedné podložce, vyber <strong>Pro celou sérii</strong> a použij jeho celkové údaje.</p>
+    </details>
+    <footer>Vstupy se ukládají v tomto prohlížeči.</footer>
+  </main>
+
+  <dialog id="copy-dialog" aria-labelledby="copy-heading">
+    <form method="dialog">
+      <h2 id="copy-heading">Výsledek ke zkopírování</h2>
+      <textarea id="copy-text" rows="9" aria-label="Text výsledku" readonly></textarea>
+      <button>Zavřít</button>
+    </form>
+  </dialog>
+</body>
+</html>
